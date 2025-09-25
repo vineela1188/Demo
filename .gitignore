@@ -1,0 +1,17 @@
+
+target/
+
+*.class
+
+*.jar
+
+node_modules/
+
+dist/
+
+.idea/
+
+.vscode/
+
+.DS_Store
+

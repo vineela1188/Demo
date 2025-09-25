@@ -1,0 +1,68 @@
+# /root/App1/docker-compose.yml
+
+version: "3.8"
+
+services:
+
+  backend:
+
+    build:
+
+      context: ./backend
+
+      dockerfile: Dockerfile
+
+      args:
+
+        MAVEN_OPTS: "-Xmx512m"
+
+    image: demo-backend:0.1
+
+    container_name: demo-backend
+
+    restart: unless-stopped
+
+    ports:
+
+      - "8080:8080"
+
+    environment:
+
+      - SPRING_PROFILES_ACTIVE=prod
+
+    # uncomment if you need to mount source for live dev (not recommended for production)
+
+    # volumes:
+
+    #   - ./backend:/app
+
+  frontend:
+
+    build:
+
+      context: ./frontend
+
+      dockerfile: Dockerfile
+
+      args:
+
+        NODE_ENV: production
+
+    image: demo-frontend:0.1
+
+    container_name: demo-frontend
+
+    restart: unless-stopped
+
+    ports:
+
+      - "4200:80"        # map container port 80 (nginx/serve) to host 4200
+
+    depends_on:
+
+      - backend
+
+    environment:
+
+      - API_URL=http://backend:8080
+ 

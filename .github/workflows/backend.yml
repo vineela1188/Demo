@@ -28,7 +28,6 @@ with:
 login-server: actioncr.azurecr.io
 username: ${{ secrets.REGISTRY_USERNAME }}
 password: ${{ secrets.REGISTRY_PASSWORD }}
-
 - name: Build and push image
 run: |
 IMAGE=actioncr.azurecr.io/demo-backend:${{ github.sha }}
@@ -39,19 +38,16 @@ DOCKER_BUILDKIT: 1
 - name: Set image name output
 id: image
 run: echo "IMAGE=actioncr.azurecr.io/demo-backend:${{ github.sha }}" >> $GITHUB_OUTPUT
-
 - name: Login to Azure (service principal)
 uses: azure/login@v1
 with:
 creds: ${{ secrets.AZURE_CREDENTIALS }} # JSON clientId, clientSecret, tenantId, subscriptionId
-
 - name: Get AKS credentials
 uses: azure/aks-set-context@v3
 with:
 creds: ${{ secrets.AZURE_CREDENTIALS }}
 cluster-name: demo-cluster
 resource-group: mytestrg
-
 - name: Update k8s image and apply manifests
 env:
 IMAGE: actioncr.azurecr.io/demo-backend:${{ github.sha }}

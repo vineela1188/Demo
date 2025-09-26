@@ -36,7 +36,6 @@ docker build -t $IMAGE ./backend
 docker push $IMAGE
 env:
 DOCKER_BUILDKIT: 1
-
 - name: Set image name output
 id: image
 run: echo "IMAGE=actioncr.azurecr.io/demo-backend:${{ github.sha }}" >> $GITHUB_OUTPUT

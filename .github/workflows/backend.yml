@@ -40,9 +40,8 @@ jobs:
     uses: azure/aks-set-context@v3
     with:
      creds: ${{ secrets.AZURE_CREDENTIALS }}
-     cluster-name: my-aks-cluster # <-- replace with your cluster name
-     resource-group: my-test-rg # <-- replace with your resource group
-
+     cluster-name: demo-cluster 
+     resource-group: myTestRG
  # 8. Deploy to AKS
   - name: Update k8s manifests and apply
     run: |

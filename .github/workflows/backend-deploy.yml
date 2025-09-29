@@ -43,7 +43,7 @@ jobs:
     - name: Get AKS credentials
       uses: azure/aks-set-context@v3
       with:
-        cluster-name: demo-cluster
+        cluster-name: demo-cluster2
         resource-group: myTestRG
         subscription: 8bb16e0a-cdc0-4042-b7a8-b15fffff7846
     

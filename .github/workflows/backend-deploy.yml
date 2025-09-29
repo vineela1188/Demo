@@ -46,8 +46,4 @@ jobs:
         creds: '${{ secrets.AZURE_CREDENTIALS }}'
         cluster-name: demo-cluster
         resource-group: mytestrg
-    - name: Update k8s image and apply manifests
-      env:
-       IMAGE: 'actioncr.azurecr.io/demo-backend:${{ github.sha }}'
-       run: |
-         kubectl apply -f k8s/ -n default
+    

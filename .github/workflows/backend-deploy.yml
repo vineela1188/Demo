@@ -44,7 +44,7 @@ jobs:
       uses: azure/aks-set-context@v3
       with:
         cluster-name: demo-cluster
-        resource-group: mytestRG
+        resource-group: myTestRG
         subscription: 8bb16e0a-cdc0-4042-b7a8-b15fffff7846
     
     

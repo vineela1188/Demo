@@ -29,8 +29,8 @@ jobs:
         IMAGE=actioncr.azurecr.io/demo-backend:${{ github.sha }}
         docker build -t $IMAGE ./backend
         docker push $IMAGE
-      env: null
-      DOCKER_BUILDKIT: 1
+      env:
+       DOCKER_BUILDKIT: 1
     - name: Set image name output
       id: image
       run: >-
@@ -47,7 +47,7 @@ jobs:
         cluster-name: demo-cluster
         resource-group: mytestrg
     - name: Update k8s image and apply manifests
-      env: null
-      IMAGE: 'actioncr.azurecr.io/demo-backend:${{ github.sha }}'
-      run: |
-        kubectl apply -f k8s/ -n default
+      env:
+       IMAGE: 'actioncr.azurecr.io/demo-backend:${{ github.sha }}'
+       run: |
+         kubectl apply -f k8s/ -n default

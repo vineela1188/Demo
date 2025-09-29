@@ -5,7 +5,7 @@ branches: [ main ]
 jobs:
  build-and-deploy-backend:
  runs-on: ubuntu-latest
-  steps:
+ steps:
   - name: Checkout
     uses: actions/checkout@v4
   - name: Set up JDK 21
@@ -18,41 +18,39 @@ jobs:
        cd backend
        mvn clean package -DskipTests
 
-- name: Log in to ACR
-  uses: azure/docker-login@v1
-  with:
-     login-server: actioncr.azurecr.io
-     username: ${{ secrets.REGISTRY_USERNAME }}
-     password: ${{ secrets.REGISTRY_PASSWORD }}
+  - name: Log in to ACR
+    uses: azure/docker-login@v1
+    with:
+      login-server: actioncr.azurecr.io
+      username: ${{ secrets.REGISTRY_USERNAME }}
+      password: ${{ secrets.REGISTRY_PASSWORD }}
 
-- name: Build and push image
-  run: |
+  - name: Build and push image
+    run: |
      IMAGE=actioncr.azurecr.io/demo-backend:${{ github.sha }}
      docker build -t $IMAGE ./backend
      docker push $IMAGE
-  env:
+    env:
     DOCKER_BUILDKIT: 1
 
-- name: Set image name output
-  id: image
-  run: echo "IMAGE=actioncr.azurecr.io/demo-backend:${{ github.sha }}" >> $GITHUB_OUTPUT
+  - name: Set image name output
+    id: image
+    run: echo "IMAGE=actioncr.azurecr.io/demo-backend:${{ github.sha }}" >> $GITHUB_OUTPUT
 
-- name: Login to Azure (service principal)
-  uses: azure/login@v1
-  with:
+  - name: Login to Azure (service principal)
+    uses: azure/login@v1
+    with:
      creds: ${{ secrets.AZURE_CREDENTIALS }} # JSON clientId, clientSecret, tenantId, subscriptionId
 
-- name: Get AKS credentials
-  uses: azure/aks-set-context@v3
-  with:
+  - name: Get AKS credentials
+    uses: azure/aks-set-context@v3
+    with:
      creds: ${{ secrets.AZURE_CREDENTIALS }}
      cluster-name: demo-cluster
      resource-group: mytestrg
 
-- name: Update k8s image and apply manifests
-  env:
-  IMAGE: actioncr.azurecr.io/demo-backend:${{ github.sha }}
-  run: |
-   # optionally replace image in deployment file (simple sed replace)
-     sed -i "s|actioncr.azurecr.io/demo-backend:.*|$IMAGE|g" k8s/deployment.yaml
-     kubectl apply -f k8s/ -n default
+  - name: Update k8s image and apply manifests
+    env:
+    IMAGE: actioncr.azurecr.io/demo-backend:${{ github.sha }}
+    run: |
+      kubectl apply -f k8s/ -n default

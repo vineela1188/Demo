@@ -1,0 +1,56 @@
+name: build-and-deploy
+on : 
+   push: 
+     branches:
+       - main
+jobs: 
+ build-and-deploy-backend:
+  runs-on: ubuntu-latest
+  steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    - name: Set up JDK 21
+      uses: actions/setup-java@v4
+      with:
+        distribution: temurin
+        java-version: 21
+    - name: Build with Maven
+      run: |
+        cd backend
+        mvn clean package -DskipTests
+    - name: Log in to ACR
+      uses: azure/docker-login@v1
+      with:
+        login-server: actioncr.azurecr.io
+        username: '${{ secrets.REGISTRY_USERNAME }}'
+        password: '${{ secrets.REGISTRY_PASSWORD }}'
+    - name: Build and push image
+      run: |
+        IMAGE=actioncr.azurecr.io/demo-backend:${{ github.sha }}
+        docker build -t $IMAGE ./backend
+        docker push $IMAGE
+      env:
+       DOCKER_BUILDKIT: 1
+    - name: Set image name output
+      id: image
+      run: >-
+        echo "IMAGE=actioncr.azurecr.io/demo-backend:${{ github.sha }}" >>
+        $GITHUB_OUTPUT
+        
+    - name: Azure Login 
+      uses: azure/login@v1
+      with:
+         creds: ${{ secrets.AZURE_CREDENTIALS }}
+        
+    - name: Get AKS credentials
+      uses: azure/aks-set-context@v3
+      with:
+        cluster-name: demo-cluster
+        resource-group: myTestRG
+        subscription: 8bb16e0a-cdc0-4042-b7a8-b15fffff7846
+    - name: Deploy to AKS
+      run: |
+        sed -e "s|__IMAGE__|${{ steps.image.outputs.IMAGE }}|g" k8s/deployment.yaml | kubectl apply -f -
+        kubectl rollout status deployment/demo-backend-deployment
+    
+    

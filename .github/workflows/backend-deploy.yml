@@ -37,7 +37,7 @@ jobs:
         echo "IMAGE=actioncr.azurecr.io/demo-backend:${{ github.sha }}" >>
         $GITHUB_OUTPUT
         
-    - name: Azure Login using OIDC
+    - name: Azure Login 
       uses: azure/login@v1
       with:
          creds: ${{ secrets.AZURE_CREDENTIALS }}
@@ -48,5 +48,9 @@ jobs:
         cluster-name: demo-cluster
         resource-group: myTestRG
         subscription: 8bb16e0a-cdc0-4042-b7a8-b15fffff7846
+    - name: Deploy to AKS
+      run: |
+        sed -e "s|__IMAGE__|${{ steps.image.outputs.IMAGE }}|g" k8s/deployment.yaml | kubectl apply -f -
+        kubectl rollout status deployment/demo-backend-deployment
     
     

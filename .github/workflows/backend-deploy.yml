@@ -49,8 +49,10 @@ jobs:
         resource-group: myTestRG
         subscription: 8bb16e0a-cdc0-4042-b7a8-b15fffff7846
     - name: Deploy to AKS
+      env:
+        IMAGE: ${{ steps.image.outputs.IMAGE }}
       run: |
-        sed -e "s|__IMAGE__|${{ steps.image.outputs.IMAGE }}|g" k8s/deployment.yaml | kubectl apply -f -
+        envsubst < K8s/deployment.yaml | kubectl apply -f -
         kubectl rollout status deployment/demo-backend-deployment
     
     

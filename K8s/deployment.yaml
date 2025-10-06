@@ -1,7 +1,8 @@
-apiVersion: appsv1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: demo-backend-deployment
+  namespace: default
   labels:
     app: demo-backend
 spec:
@@ -16,7 +17,7 @@ spec:
     spec:
       containers:
         - name: demo-backend
-          image: __IMAGE__
+          image: ${IMAGE}
           ports:
             - containerPort: 8080
 ---

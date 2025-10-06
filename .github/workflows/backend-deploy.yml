@@ -5,8 +5,8 @@ on:
      branches:
           - main # optional: run on push to main
 env:
- CODE_REPO: "https://github.com/vineela1188/Demo.git/main" # <-- change to your code repo (owner/repo)
- CODE_PATH: "code-repo" # folder where code will be checked out
+ CODE_REPO: vineela1188/Demo
+ CODE_PATH: "code-repo" 
  IMAGE_NAME: "my-backend-app" # image name (local to the runner)
  IMAGE_TAG: ${{ github.sha }}
 
@@ -21,6 +21,7 @@ jobs:
     uses: actions/checkout@v4
     with:
      repository: ${{ env.CODE_REPO }}
+     ref: main
      path: ${{ env.CODE_PATH }}
      token: ${{ secrets.PERSONAL_ACCESS_TOKEN }} # required if private; remove if public
 

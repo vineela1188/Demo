@@ -26,7 +26,6 @@ jobs:
          username: ${{ secrets.DOCKERHUB_USERNAME }}
          password: ${{ secrets.DOCKERHUB_TOKEN }}
      - name: Build Docker image
-       # On windows runners PowerShell is default; docker commands are the same.
        working-directory: backend
        run: |
          # define image name + tag

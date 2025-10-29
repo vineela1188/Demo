@@ -38,3 +38,18 @@ jobs:
          IMAGE_NAME=${{ secrets.DOCKERHUB_USERNAME }}/my-backend-app
          IMAGE_TAG=latest
          docker push $IMAGE_NAME:$IMAGE_TAG
+     - name: Print image tags
+       run: |
+         echo "✅ Image pushed successfully!"
+         echo "${{ secrets.DOCKERHUB_USERNAME }}/backend:latest"
+         echo "${{ secrets.DOCKERHUB_USERNAME }}/backend:${{ github.sha }}"
+     - name: Ensure kubectl present
+       uses: azure/setup-kubectl@v3
+       with:
+         version: 'latest'
+     - name: Use minikube context
+       run: |
+         echo "Minikube status:"
+         minikube status || true
+         kubectl config use-context minikube || true
+         kubectl get nodes -o wide
